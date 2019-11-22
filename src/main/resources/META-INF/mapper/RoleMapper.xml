@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dk.sso.worker.membership.account.mapper.RoleMapper">
+
+    <select id="selectRolesByUserId" resultType="com.dk.sso.worker.membership.account.entity.Role">
+        SELECT
+            r.`role_id`,
+            r.`lowered_role_name`,
+            r.`role_name`,
+            r.`description`,
+            r.`appid`
+        FROM
+            `role` r
+        INNER JOIN `usersinroles` ur ON r.`role_id` = ur.`role_id`
+        AND ur.`user_id` = #{userId}
+    </select>
+
+</mapper>

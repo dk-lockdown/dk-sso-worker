@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dk.sso.worker.membership.sms.mapper.SmsVerifyCodeMapper">
+
+    <insert id="insertSmsVerifyCode">
+        INSERT INTO `sms_verify_code`
+        (
+            `mobile_number`,
+            `verify_code`,
+            `expire_in`,
+            `next_retry`,
+            `type`
+        )
+        values
+        (
+            #{mobileNumber},
+            #{verifyCode},
+            adddate(now(),interval #{expireIn} minute),
+            adddate(now(),interval #{retryDuration} SECOND),
+            #{type}
+        );
+    </insert>
+
+    <update id="updateSmsVerifyCodeIntoExpired">
+        UPDATE `sms_verify_code`
+        SET `status` = -1
+        WHERE `mobile_number`= #{mobileNumber}
+        AND `template_key` = #{templateKey}
+        AND `status` = 1
+    </update>
+
+    <select id="selectALLSmsVerifyCodeToday" resultType="com.dk.sso.worker.membership.sms.entity.SmsVerifyCode">
+        SELECT
+            `id`,
+            `mobile_number`,
+            `verify_code`,
+            `expire_in`,
+            `create_date`,
+            `next_retry`
+        FROM
+            `sms_verify_code`
+        WHERE `mobile_number`= #{mobileNumber}
+        AND `template_key` = #{templateKey}
+        AND DATE(`create_date`) = CURDATE()
+        ORDER BY `create_date` DESC;
+    </select>
+
+    <select id="hasSmsVerifyCodeExpired" resultType="java.lang.Boolean">
+        SELECT EXISTS(SELECT 1
+        FROM
+            `sms_verify_code`
+        WHERE `mobile_number`= #{mobileNumber}
+        AND `verify_code` = #{verifyCode}
+        AND `template_key` = #{templateKey}
+        AND `expire_in` > now()
+        AND `status` = 1
+        ORDER BY `create_date` DESC
+        LIMIT 1);
+    </select>
+
+    <update id="updateSmsVerifyFailCount">
+        UPDATE `sms_verify_code`
+        SET `fail_count` = fail_count + 1
+        WHERE `mobile_number`= #{mobileNumber}
+        AND `template_key` = #{templateKey}
+        AND `fail_count` &lt; 9
+        AND `status` = 1
+        order by Create_Date desc limit 1
+    </update>
+</mapper>

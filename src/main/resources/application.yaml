@@ -1,0 +1,75 @@
+server:
+  port: 3002
+  servlet:
+    context-path: /sso
+
+spring:
+  application:
+    name: dk-sso
+  profiles:
+    active: dev
+  thymeleaf:
+    cache: false
+
+app:
+  id: dk-sso
+
+---
+spring:
+  profiles: dev
+  application:
+    swagger:
+      host:
+
+data-source:
+  useMasterSlave: true
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:META-INF/mapper/*Mapper.xml
+  executorType: SIMPLE
+sharding:
+  jdbc:
+    datasource:
+      names: master,slave0
+      master:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/memberships?useUnicode=true&useSSL=false&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Hongkong
+        username: root
+        password: 123456
+        validationQuery: select 1
+        testOnBorrow: true
+      slave0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/memberships?useUnicode=true&useSSL=false&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true&serverTimezone=Hongkong
+        username: root
+        password: 123456
+        validationQuery: select 1
+        testOnBorrow: true
+    config:
+      masterslave:
+        name: ms
+        master-data-source-name: master
+        slave-data-source-names: slave0
+        props:
+          sql:
+            show: true
+
+dk:
+  permissionCheck:
+    enable: false
+  signatureVerify:
+    enable: false
+  account:
+    svc:
+      host: http://localhost:3002
+---
+spring:
+  profiles: prd
+
+data-source:
+  useMasterSlave: true
+mybatis:
+  mapper-locations: classpath:META-INF/mapper/*Mapper.xml
+  executorType: SIMPLE

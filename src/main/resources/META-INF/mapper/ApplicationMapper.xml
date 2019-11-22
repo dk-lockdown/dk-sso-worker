@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dk.sso.worker.membership.application.mapper.ApplicationMapper">
+
+    <insert id="insertApplication" parameterType="com.dk.sso.worker.membership.application.entity.Application">
+        INSERT INTO `application` (
+             `appid`,
+             `app_name`,
+             `app_secret`,
+             `grant_types`,
+             `redirect_url`,
+             `expire_in`,
+             `description`)
+        values
+        (#{appId,jdbcType=VARCHAR},
+        #{appName,jdbcType=VARCHAR},
+        #{appSecretEncrypted,jdbcType=VARCHAR},
+        #{appSecret,jdbcType=VARCHAR},
+        #{grantTypes,jdbcType=VARCHAR},
+        #{redirectUrl,jdbcType=VARCHAR},
+        #{expireIn,jdbcType=DECIMAL},
+        #{description,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="ifApplicationExistsByAppName" resultType="java.lang.Boolean">
+        SELECT EXISTS
+	      ( SELECT 1 FROM `application` WHERE `app_name` = #{appName} )
+    </select>
+
+    <select id="ifApplicationExistsByAppId" resultType="java.lang.Boolean">
+        SELECT EXISTS
+	      ( SELECT 1 FROM `application` WHERE `appid` = #{appId} )
+    </select>
+
+    <select id="selectApplicationByAppId" resultType="com.dk.sso.worker.membership.application.entity.Application">
+        SELECT
+            `appid`,
+            `app_name`,
+            `app_secret`,
+            `grant_types`,
+            `redirect_url`,
+            `expire_in`,
+            `description`
+        FROM
+            `application`
+        WHERE
+            `appid` = #{appId}
+        AND `status` = 1
+    </select>
+
+    <select id="selectApplicationsByPager" resultType="com.dk.sso.worker.membership.application.entity.Application">
+        SELECT
+        `appid`,
+        `app_name`,
+        `app_secret`,
+        `grant_types`,
+        `redirect_url`,
+        `expire_in`,
+        `description`
+        FROM
+        `application`
+        WHERE
+        `status` = 1
+        <if test="appId != null and appId != ''">
+            and `appid` = #{appId}
+        </if>
+    </select>
+</mapper>

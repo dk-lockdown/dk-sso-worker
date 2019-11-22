@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dk.sso.worker.membership.account.mapper.UserMapper">
+
+    <insert id="insertUser" parameterType="com.dk.sso.worker.membership.account.entity.User">
+        INSERT INTO user (
+            `user_id`,
+            `user_name`,
+            `nickname`,
+            `password`,
+            `password_format`,
+            `password_salt`,
+            `mobile_number`,
+            `email`,
+            `lowered_email`,
+            `avatar`,
+            `is_approved`,
+            `appid`,
+            `comment`)
+        values
+        (#{userId,jdbcType=DECIMAL},
+        #{userName,jdbcType=VARCHAR},
+        #{nickName,jdbcType=VARCHAR},
+        #{password,jdbcType=VARCHAR},
+        #{passwordFormat,jdbcType=DECIMAL},
+        #{passwordSalt,jdbcType=VARCHAR},
+        #{mobileNumber,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR},
+        #{loweredEmail,jdbcType=VARCHAR},
+        #{avatar,jdbcType=VARCHAR},
+        1,
+        #{appId,jdbcType=VARCHAR},
+        #{comment,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="selectUserByUserId" resultType="com.dk.sso.worker.membership.account.entity.User">
+        SELECT
+          `user_id`,
+          `user_name`,
+          `nickname`,
+          `password`,
+          `password_format`,
+          `password_salt`,
+          `mobile_number`,
+          `email`,
+          `lowered_email`,
+          `avatar`,
+          `is_approved`,
+          `is_locked_out`,
+          `create_date`,
+          `last_login_date`,
+          `last_password_changed_date`,
+          `last_lock_out_date`,
+          `comment`,
+          `last_activity_date`,
+          `appid`
+        FROM `user`
+        WHERE `user_id` = #{userId}
+    </select>
+
+    <select id="selectUserByUserName" resultType="com.dk.sso.worker.membership.account.entity.User">
+        SELECT
+          `user_id`,
+          `user_name`,
+          `nickname`,
+          `password`,
+          `password_format`,
+          `password_salt`,
+          `mobile_number`,
+          `email`,
+          `lowered_email`,
+          `avatar`,
+          `is_approved`,
+          `is_locked_out`,
+          `create_date`,
+          `last_login_date`,
+          `last_password_changed_date`,
+          `last_lock_out_date`,
+          `comment`,
+          `last_activity_date`,
+          `appid`
+        FROM `user`
+        WHERE `user_name` = #{userName} OR `mobile_number` = #{userName} OR `email` = #{userName}
+    </select>
+
+    <select id="selectUsersByPager" resultType="com.dk.sso.worker.membership.account.entity.User">
+        SELECT
+        `user_id`,
+        `user_name`,
+        `nickname`,
+        `password`,
+        `password_format`,
+        `password_salt`,
+        `mobile_number`,
+        `email`,
+        `lowered_email`,
+        `avatar`,
+        `is_approved`,
+        `is_locked_out`,
+        `create_date`,
+        `last_login_date`,
+        `last_password_changed_date`,
+        `last_lock_out_date`,
+        `comment`,
+        `last_activity_date`,
+        `appid`
+        FROM `user`
+        <where>
+            <if test="userName != null and userName != ''">
+                and (`user_name` = #{userName} OR `mobile_number` = #{userName} OR `email` = #{userName})
+            </if>
+        </where>
+    </select>
+
+    <update id="updateUserPassword">
+        UPDATE `user`
+        SET `password` = #{password,jdbcType=VARCHAR},
+        `last_password_changed_date` = now()
+        WHERE `user_id` = #{userId}
+    </update>
+
+    <update id="bindMobilePhone">
+        UPDATE `user`
+        SET `mobile_number` = #{mobileNumber}
+        WHERE `user_name` = #{userName}
+    </update>
+
+    <update id="updateAvatar">
+        UPDATE `user`
+        SET `avatar` = #{avatar}
+        WHERE `user_name` = #{userName}
+    </update>
+
+    <update id="updateNickName">
+        UPDATE `user`
+        SET `nickname` = #{nickname}
+        WHERE `user_name` = #{userName}
+    </update>
+
+    <update id="disableUser">
+        UPDATE `user`
+        SET `is_approved` = 0
+        WHERE `user_name` = #{userName}
+    </update>
+
+    <update id="enableUser">
+        UPDATE `user`
+        SET `is_approved` = 0
+        WHERE `user_name` = #{userName}
+    </update>
+
+    <update id="updateIsApproved">
+        UPDATE `user`
+        SET `is_approved` = #{isApproved}
+        WHERE `user_name` = #{userName}
+    </update>
+</mapper>

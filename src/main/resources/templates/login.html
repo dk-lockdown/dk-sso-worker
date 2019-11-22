@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<script th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
+	</head>
+	<style>
+		body,
+		html {
+			height: 100%;
+			width: 100%;
+		}
+		
+		a {
+			text-decoration: none;
+		}
+		
+		*,
+		 :after,
+		 :before {
+			padding: 0;
+			margin: 0;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		
+		fieldset,
+		img {
+			vertical-align: middle;
+			border: 0;
+		}
+		
+		input {
+			background-color: transparent;
+			border: 0;
+			outline: none;
+			font: 14px/1.5 "Microsoft YaHei", SimSun, '\5b8b\4f53', sans-serif;
+			font-style: normal;
+			font-weight: normal;
+			vertical-align: inherit;
+			-webkit-box-shadow: none;
+			-moz-box-shadow: none;
+			box-shadow: none;
+		}
+		
+		input::-webkit-input-placeholder,
+		textarea::-webkit-input-placeholder {
+			color: #898b8c;
+		}
+		
+		input:-moz-placeholder,
+		textarea:-moz-placeholder {
+			color: #898b8c;
+		}
+		
+		input::-moz-placeholder,
+		textarea::-moz-placeholder {
+			color: #898b8c;
+		}
+		
+		input:-ms-input-placeholder,
+		textarea:-ms-input-placeholder {
+			color: #898b8c;
+		}
+		
+		.clearFix:before,
+		.clearFix:after {
+			content: "";
+			display: table;
+		}
+		
+		.clearFix:after {
+			clear: both;
+		}
+		
+		.clearFix:before,
+		.clearFix:after {
+			content: "";
+			display: table;
+		}
+		
+		.clearFix {
+			zoom: 1;
+		}
+		
+		.bg-login {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			background:url([[@{/static/images/bg_img.jpg}]]);
+			background-repeat: no-repeat;
+			background-position: center;
+			background-size: cover;
+			background-color: #2b2e3d;
+		}
+		/*从上到下淡入效果*/
+		
+		.a-fadeinT {
+			-webkit-animation: 1s ease-out backwards;
+			-moz-animation: 1s ease-out backwards;
+			-ms-animation: 1s ease-out backwards;
+			animation: 1s ease-out backwards;
+		}
+		
+		.a-fadeinT {
+			-webkit-animation-name: fadeinT;
+			-moz-animation-name: fadeinT;
+			-ms-animation-name: fadeinT;
+			animation-name: fadeinT;
+		}
+		
+		@-webkit-keyframes fadeinT {
+			0% {
+				opacity: 0;
+				-webkit-transform: translateY(-100px);
+			}
+			100% {
+				opacity: 1;
+				-webkit-transform: translateY(0);
+			}
+		}
+		
+		@-moz-keyframes fadeinT {
+			0% {
+				opacity: 0;
+				-moz-transform: translateY(-100px);
+			}
+			100% {
+				opacity: 1;
+				-moz-transform: translateY(0);
+			}
+		}
+		
+		@-ms-keyframes fadeinT {
+			0% {
+				opacity: 0;
+				-ms-transform: translateY(-100px);
+			}
+			100% {
+				opacity: 1;
+				-ms-transform: translateY(0);
+			}
+		}
+		
+		@keyframes fadeinT {
+			0% {
+				opacity: 0;
+				transform: translateY(-100px);
+			}
+			100% {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+		
+		.login {
+			position: absolute;
+			width: 593px;
+			height: 350px;
+			background-color: rgba(28, 29, 31, .8);
+			box-shadow: 0px 0px 50px 0px rgba(0, 0, 0, 0.39);
+			border-radius: 10px;
+			top: 50%;
+			left: 50%;
+			margin-top: -175px;
+			margin-left: -296px;
+		}
+		
+		.login .title {
+			width: 100%;
+			height: 55px;
+			background-color: rgba(10, 11, 13, .25);
+			border-radius: 4px 4px 0px 0px;
+			border-radius: 4px 4px 0px 0px;
+			opacity: 0.6;
+			padding: 0 30px;
+		}
+		
+		.login .title img {
+			height: 33px;
+			margin-top: -6px;
+		}
+		
+		.login .title span.line {
+			width: 1px;
+			height: 21px;
+			margin: 0 10px;
+			background-color: #ffffff;
+			opacity: 0.2;
+			display: inline-block;
+		}
+		
+		.login .title span.text {
+			font-family: MicrosoftYaHei;
+			font-size: 21px;
+			line-height: 55px;
+			color: #ffffff;
+		}
+		
+		.login-inner {
+			padding: 26px 30px;
+		}
+		
+		.login-inner .login-input {
+			width: 310px;
+			height: 254px;
+			float: left;
+			border-right: 1px solid #32353b;
+		}
+		
+		.login-inner .login-input span.number {
+			font-family: MicrosoftYaHei;
+			font-size: 20px;
+			color: #8a8c93;
+			display: inline-block;
+			margin-bottom: 20px;
+		}
+		
+		.login-inner .login-input form {
+			position: relative;
+		}
+		
+		.login-inner .login-input .error {
+			display: none;
+			width: 280px;
+			background-color: #534f54;
+			border: solid 1px #6f6970;
+			position: absolute;
+			padding: 10px 20px;
+			font-family: MicrosoftYaHei;
+			font-size: 12px;
+			line-height: 18px;
+			color: #ffffff;
+			bottom: 184px;
+		}
+		
+		.login-inner .login-input .error .icon-warn {
+			background: url([[@{/static/images/warn.png}]]) 0 0 no-repeat;
+			background-size: cover;
+			width: 13px;
+			height: 13px;
+			display: inline-block;
+			margin: -3px 5px 0 0;
+			vertical-align: middle;
+		}
+		
+		.login-inner .login-input form .pub {
+			width: 280px;
+			height: 44px;
+			margin-bottom: 20px;
+		}
+		
+		.login-inner .login-input form .pub input {
+			width: 100%;
+			line-height: 44px;
+			font-size: 14px;
+			color: #ffffff;
+			padding: 0 16px;
+			background-color: #2e2f30;
+			border-radius: 4px;
+			border: solid 1px #3b3c3d;
+		}
+		
+		.login-inner .login-input form .pub input:focus {
+			box-shadow: 0px 0px 4px 0px #638dff;
+			border-radius: 4px;
+			border: solid 1px #4c7cff;
+		}
+		
+		.login-inner .login-input form .pub .in-box::-webkit-input-placeholder {
+			font-family: MicrosoftYaHei;
+			font-size: 14px;
+			color: #95979e;
+		}
+		
+		.login-inner .login-input form .pub .in-box:-moz-placeholder {
+			font-family: MicrosoftYaHei;
+			font-size: 14px;
+			color: #95979e;
+		}
+		
+		.login-inner .login-input form .pub .in-box::-moz-placeholder {
+			font-family: MicrosoftYaHei;
+			font-size: 14px;
+			color: #95979e;
+		}
+		
+		.login-inner .login-input form .pub .in-box:-ms-input-placeholder {
+			font-family: MicrosoftYaHei;
+			font-size: 14px;
+			color: #95979e;
+		}
+		
+		.login-inner .login-input form .register {
+			width: 280px;
+			height: 44px;
+			background-color: #1957ff;
+			border-radius: 4px;
+			text-align: center;
+			display: inline-block;
+			line-height: 44px;
+			font-size: 16px;
+			color: #fff;
+		}
+		
+		.login-inner .login-reminder {
+			width: 220px;
+			float: right;
+			padding-left: 30px;
+		}
+		
+		.login-inner .hint {
+			display: none;
+			position: absolute;
+			width: 254px;
+			height: 55px;
+			background-color: #161617;
+			box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.22);
+			top: 26px;
+			padding: 10px;
+			border-radius: 4px;
+		}
+		
+		.login-inner .hint .square_top_corner {
+			font-size: 30px;
+			position: absolute;
+			top: 34.01px;
+			right: 200px;
+			color: #161617;
+		}
+		
+		.login-inner .hint .square_inner_border {
+			font-family: MicrosoftYaHei;
+			font-size: 12px;
+			line-height: 18px;
+			color: #ffffff;
+		}
+		
+		.login-inner .login-reminder .sp1:hover+.hint {
+			display: block;
+		}
+		
+		.login-inner .login-reminder .sp {
+			border-bottom: 1px solid #32353b;
+			padding: 10px 0;
+			line-height: 20px;
+		}
+		
+		.login-inner .login-reminder .sp1 {
+			font-family: MicrosoftYaHei;
+			font-size: 14px;
+			position: relative;
+			color: #95979e;
+		}
+		
+		.login-inner .login-reminder .sp2 {
+			font-family: MicrosoftYaHei;
+			font-size: 15px;
+			color: #95979e;
+		}
+		
+		.login-inner .login-reminder .sp2 b {
+			font-weight: normal;
+			color: #668fff;
+		}
+		
+		.check-form .checkbox {
+			font-family: MicrosoftYaHei;
+			font-size: 14px;
+			line-height: 20px;
+			color: #909299;
+		}
+		
+		.checkbox,
+		.radio {
+			margin-bottom: 10px;
+			display: block;
+		}
+		
+		.check-all {
+			margin-bottom: 15px;
+		}
+		
+		.checkbox:hover,
+		.radio:hover {
+			cursor: pointer;
+		}
+		
+		.form-horizontal .checkbox-inline,
+		.form-horizontal .radio-inline {
+			padding-top: 0;
+			padding-left: 10px;
+		}
+		
+		.indent {
+			padding-left: 30px;
+		}
+		
+		.indent .icon-checkbox,
+		.indent .icon-radio {
+			margin-left: -30px;
+		}
+		
+		.icon-radio+span.radio-label {
+			position: relative;
+			top: -2px;
+			font-size: 14px;
+			color: #666;
+			font-weight: 400;
+		}
+		
+		.checkbox input[type="checkbox"],
+		.radio input[type="radio"] {
+			display: none;
+		}
+		
+		.checkbox input[type="checkbox"]+i,
+		.radio input[type="radio"]+i {
+			width: 14px;
+			height: 14px;
+			background: url([[@{/static/images/checkbox.png}]]) 1px 1px no-repeat;
+			background-size: 140px 14px;
+			display: inline-block;
+			position: relative;
+			bottom: -2px;
+			margin-right: 5px;
+		}
+		/*.checkbox:hover input[type="checkbox"]+.icon-checkbox {
+			background-position: -28px 0;
+		}
+		*/
+		
+		.checkbox input[type="checkbox"]:checked+.icon-checkbox {
+			background-position: -27px 1px;
+		}
+		
+		.checkbox input[type="checkbox"]:disabled+.icon-checkbox {
+			background-position: -41px 0;
+		}
+		
+		.checkbox input[type="checkbox"]:disabled:checked+.icon-checkbox {
+			background-position: -55px 0;
+		}
+		/*CHECKBOX-XS*/
+		
+		.checkbox-xs.indent {
+			padding-left: 25px;
+		}
+		
+		.checkbox-xs.indent .icon-checkbox {
+			margin-left: -25px;
+		}
+		
+		.checkbox-xs input[type="checkbox"]+i,
+		.radio-xs input[type="radio"]+i {
+			height: 16px;
+			width: 16px;
+			background-size: 160px 16px;
+		}
+		
+		.checkbox-xs:hover input[type="checkbox"]+.icon-checkbox {
+			background-position: -16px 0;
+		}
+		
+		.checkbox-xs input[type="checkbox"]:checked+.icon-checkbox {
+			background-position: -32px 0;
+		}
+		
+		.checkbox-xs input[type="checkbox"]:disabled+.icon-checkbox {
+			background-position: -48px 0;
+		}
+		
+		.checkbox-xs input[type="checkbox"]:disabled:checked+.icon-checkbox {
+			background-position: -64px 0;
+		}
+		/*RADIO*/
+		
+		.radio:hover input[type="radio"]+.icon-radio {
+			background-position: -144px 0;
+		}
+		
+		.radio input[type="radio"]+.icon-radio {
+			background-position: -120px 0;
+		}
+		
+		.radio input[type="radio"]:checked+.icon-radio {
+			background-position: -168px 0;
+		}
+		
+		.radio input[type="radio"]:disabled+.icon-radio {
+			background-position: -192px 0;
+		}
+		
+		.radio input[type="radio"]:disabled:checked+.icon-radio {
+			background-position: -216px 0;
+		}
+		/*RADIO-XS*/
+		
+		.radio-xs.indent {
+			padding-left: 25px;
+		}
+		
+		.radio-xs.indent .icon-radio {
+			margin-left: -25px;
+		}
+		
+		.radio-xs:hover input[type="radio"]+.icon-radio {
+			background-position: -112px 0;
+		}
+		
+		.radio-xs input[type="radio"]+.icon-radio {
+			background-position: -80px 0;
+		}
+		
+		.radio-xs input[type="radio"]:checked+.icon-radio {
+			background-position: -112px 0;
+		}
+		
+		.radio-xs input[type="radio"]:disabled+.icon-radio {
+			background-position: -128px 0;
+		}
+		
+		.radio-xs input[type="radio"]:disabled:checked+.icon-radio {
+			background-position: -144px 0;
+		}
+	</style>
+
+	<body>
+
+		<div class="bg-login" th:style="''">
+			<div class="login a-fadeinT">
+				<div class="title">
+					<span class="line">|</span>
+					<span class="text">授权登录</span>
+				</div>
+				<div class="login-inner clearFix">
+					<div class="login-input">
+						<span class="number">账号密码登录</span>
+						<form>
+							<p class="error"><i class="icon-warn"></i></p>
+							<div class="userName pub">
+								<input class="in-box judge" type="text" placeholder="用户名">
+							</div>
+							<div class="pass pub">
+								<input class="in-box judge" type="password" placeholder="请输入登录密码">
+							</div>
+							<a class="register" href="javascript:;">授权并登录</a>
+						</form>
+					</div>
+					<div class="login-reminder">
+						<p class="sp1 sp">什么是授权登录？</p>
+						<div class="hint">
+							<span class="square_top_corner">◆</span>
+							<div class="square_inner_border">
+								dk-sso
+							</div>
+						</div>
+						<p class="sp2 sp"><b th:text="${appName}"></b>将获得以下权限</p>
+						<div class="check-form">
+							<label class="checkbox check-all">
+								<input type="checkbox" />
+								<i class="icon-checkbox "></i>全选
+							</label>
+							<div class="check-list">
+								<label class="checkbox">
+									<input type="checkbox" checked/>
+									<i class="icon-checkbox "></i>获得您的昵称、头像、性别及会员信息
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function(){
+				$(".login-input").on("click",".register",function(){
+				    var state = GetQueryString("state");
+                    var loginVO = {
+                            userName: $(".userName input").val(),
+                            password: $(".pass input").val(),
+                            clientId: GetQueryString("client_id"),
+                            responseType: "code",
+                            redirectUri: GetQueryString("redirect_uri"),
+                            scope: "all"
+                        };
+				    $.ajax({"type":"POST","url":"/sso/login","data":JSON.stringify(loginVO),"success":function (response) {
+						if(response.success){
+						    var redirect_url=GetQueryString("redirect_uri");
+						    if(redirect_url.indexOf("?")>=0) {
+                                if(!!state) {
+                                    window.location.href = redirect_url + "&code=" + response.data + "&state=" + GetQueryString("state");
+                                } else{
+                                    window.location.href = redirect_url + "&code=" + response.data;
+                                }
+                            }else{
+                                if(!!state) {
+                                    window.location.href = redirect_url + "?code=" + response.data + "&state=" + GetQueryString("state");
+                                }else{
+                                    window.location.href = redirect_url + "?code=" + response.data;
+								}
+							}
+						}else{
+						    $(".error").html("<i class=\"icon-warn\"></i>"+response.msg);
+						    $(".error").show();
+						}
+                    },"contentType": 'application/json',"dataType":"json"});
+				});
+
+                function GetQueryString(name)
+                {
+                    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+                    var r = window.location.search.substr(1).match(reg);
+                    if(r!=null)return  unescape(r[2]); return null;
+                }
+			});
+		</script>
+	</body>
+
+</html>

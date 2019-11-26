@@ -15,7 +15,11 @@ import java.util.Base64;
 
 public class TokenHelper {
     public static TokenExtractResult extract(String token, ClientDetailsService clientDetailsService){
-        String t = token.substring(OAuth2Utils.BEARER_TYPE.length()+1);
+        String t = token;
+        String prefix = token.substring(0,OAuth2Utils.BEARER_TYPE.length());
+        if(prefix.equalsIgnoreCase(OAuth2Utils.BEARER_TYPE)) {
+            t = token.substring(OAuth2Utils.BEARER_TYPE.length() + 1);
+        }
         String[] st = t.split("\\.",3);
         if(st==null||st.length!=3) {
             return null;

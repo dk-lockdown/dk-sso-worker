@@ -158,6 +158,7 @@ public class MainController extends BaseController {
             }
             return redirectTarget;
         } catch (Exception ex){
+            ex.printStackTrace();
             RedirectView redirectTarget = new RedirectView();
             redirectTarget.setContextRelative(true);
             redirectTarget.setUrl("login");

@@ -64,43 +64,46 @@ public class MainController extends BaseController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public ModelAndView login(@RequestParam
-            Map<String, String> parameters) {
+            Map<String, String> parameters) throws BusinessException {
         String clientId = parameters.get("client_id");
         Application app = applicationService.selectApplicationByAppId(clientId);
-        ModelAndView modelAndView = new ModelAndView("login");
-        LoginView lv = new LoginView();
-        lv.setAppName(app.getAppName());
+        if(app!=null) {
+            ModelAndView modelAndView = new ModelAndView("login");
+            LoginView lv = new LoginView();
+            lv.setAppName(app.getAppName());
 
-        Map<String,String> paras = new HashMap<>(parameters.size());
-        if(parameters.containsKey(OAuth2Utils.RESPONSE_TYPE)){
-            paras.putIfAbsent("responseType",parameters.get(OAuth2Utils.RESPONSE_TYPE));
-        } else {
-            modelAndView.addObject("errorMessage", "response_type不能为空");
-        }
-        if(parameters.containsKey(OAuth2Utils.CLIENT_ID)){
-            paras.putIfAbsent("clientId",parameters.get(OAuth2Utils.CLIENT_ID));
-        } else {
-            modelAndView.addObject("errorMessage", "client_id不能为空");
-        }
-        if(parameters.containsKey(OAuth2Utils.REDIRECT_URI)){
-            paras.putIfAbsent("redirectUri",parameters.get(OAuth2Utils.REDIRECT_URI));
-        } else {
-            modelAndView.addObject("errorMessage", "redirect_url不能为空");
-        }
-        if(parameters.containsKey(OAuth2Utils.SCOPE)){
-            paras.putIfAbsent("scope",parameters.get(OAuth2Utils.SCOPE));
-        } else {
-            modelAndView.addObject("errorShow", true);
-            modelAndView.addObject("errorMessage", "scope不能为空");
-        }
+            Map<String, String> paras = new HashMap<>(parameters.size());
+            if (parameters.containsKey(OAuth2Utils.RESPONSE_TYPE)) {
+                paras.putIfAbsent("responseType", parameters.get(OAuth2Utils.RESPONSE_TYPE));
+            } else {
+                modelAndView.addObject("errorMessage", "response_type不能为空");
+            }
+            if (parameters.containsKey(OAuth2Utils.CLIENT_ID)) {
+                paras.putIfAbsent("clientId", parameters.get(OAuth2Utils.CLIENT_ID));
+            } else {
+                modelAndView.addObject("errorMessage", "client_id不能为空");
+            }
+            if (parameters.containsKey(OAuth2Utils.REDIRECT_URI)) {
+                paras.putIfAbsent("redirectUri", parameters.get(OAuth2Utils.REDIRECT_URI));
+            } else {
+                modelAndView.addObject("errorMessage", "redirect_url不能为空");
+            }
+            if (parameters.containsKey(OAuth2Utils.SCOPE)) {
+                paras.putIfAbsent("scope", parameters.get(OAuth2Utils.SCOPE));
+            } else {
+                modelAndView.addObject("errorShow", true);
+                modelAndView.addObject("errorMessage", "scope不能为空");
+            }
 
-        if(parameters.containsKey(OAuth2Utils.STATE)){
-            paras.putIfAbsent("state",parameters.get(OAuth2Utils.STATE));
-        }
-        lv.setParameters(paras);
-        modelAndView.addObject("loginView",lv);
+            if (parameters.containsKey(OAuth2Utils.STATE)) {
+                paras.putIfAbsent("state", parameters.get(OAuth2Utils.STATE));
+            }
+            lv.setParameters(paras);
+            modelAndView.addObject("loginView", lv);
 
-        return modelAndView;
+            return modelAndView;
+        }
+        throw new BusinessException("应用不存在");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)

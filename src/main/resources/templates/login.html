@@ -538,15 +538,16 @@
 				<div class="login-inner clearFix">
 					<div class="login-input">
 						<span class="number">账号密码登录</span>
-						<form>
-							<p class="error"><i class="icon-warn"></i></p>
+						<form action="#" th:action="@{/login}" method="post">
+							<p class="error" th:style="'display:' + @{(${errorShow} ? 'inline-block':'none')} + ''"><i class="icon-warn"></i><i th:text="${errorMessage}"></i></p>
 							<div class="userName pub">
-								<input class="in-box judge" type="text" placeholder="用户名">
+								<input class="in-box judge" type="text" name="userName" placeholder="用户名">
 							</div>
 							<div class="pass pub">
-								<input class="in-box judge" type="password" placeholder="请输入登录密码">
+								<input class="in-box judge" type="password" name="password" placeholder="请输入登录密码">
 							</div>
-							<a class="register" href="javascript:;">授权并登录</a>
+							<input th:each="para : ${loginView.parameters}" type="hidden" th:name="${para.getKey()}" th:value="${para.getValue()}">
+							<input class="register" type="submit" value="授权并登录"/>
 						</form>
 					</div>
 					<div class="login-reminder">
@@ -557,7 +558,7 @@
 								dk-sso
 							</div>
 						</div>
-						<p class="sp2 sp"><b th:text="${appName}"></b>将获得以下权限</p>
+						<p class="sp2 sp"><b th:text="${loginView.appName}"></b>将获得以下权限</p>
 						<div class="check-form">
 							<label class="checkbox check-all">
 								<input type="checkbox" />
@@ -574,49 +575,6 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript">
-			$(function(){
-				$(".login-input").on("click",".register",function(){
-				    var state = GetQueryString("state");
-                    var loginVO = {
-                            userName: $(".userName input").val(),
-                            password: $(".pass input").val(),
-                            clientId: GetQueryString("client_id"),
-                            responseType: "code",
-                            redirectUri: GetQueryString("redirect_uri"),
-                            scope: "all"
-                        };
-				    $.ajax({"type":"POST","url":"/sso/login","data":JSON.stringify(loginVO),"success":function (response) {
-						if(response.success){
-						    var redirect_url=GetQueryString("redirect_uri");
-						    if(redirect_url.indexOf("?")>=0) {
-                                if(!!state) {
-                                    window.location.href = redirect_url + "&code=" + response.data + "&state=" + GetQueryString("state");
-                                } else{
-                                    window.location.href = redirect_url + "&code=" + response.data;
-                                }
-                            }else{
-                                if(!!state) {
-                                    window.location.href = redirect_url + "?code=" + response.data + "&state=" + GetQueryString("state");
-                                }else{
-                                    window.location.href = redirect_url + "?code=" + response.data;
-								}
-							}
-						}else{
-						    $(".error").html("<i class=\"icon-warn\"></i>"+response.msg);
-						    $(".error").show();
-						}
-                    },"contentType": 'application/json',"dataType":"json"});
-				});
-
-                function GetQueryString(name)
-                {
-                    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
-                    var r = window.location.search.substr(1).match(reg);
-                    if(r!=null)return  unescape(r[2]); return null;
-                }
-			});
-		</script>
 	</body>
 
 </html>

@@ -2,7 +2,7 @@ package com.dk.sso.worker.oauth2.logincontroller;
 
 import com.dk.foundation.engine.baseentity.StandResponse;
 import com.dk.foundation.engine.exception.BusinessException;
-import com.dk.sso.worker.membership.account.controller.vo.LoginView;
+import com.dk.sso.worker.oauth2.logincontroller.vo.LoginView;
 import com.dk.sso.worker.membership.application.entity.Application;
 import com.dk.sso.worker.membership.application.service.ApplicationService;
 import com.dk.sso.worker.membership.sms.conf.SmsConfig;
@@ -29,7 +29,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;

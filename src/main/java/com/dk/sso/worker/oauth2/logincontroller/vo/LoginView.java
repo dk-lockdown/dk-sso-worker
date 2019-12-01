@@ -1,4 +1,4 @@
-package com.dk.sso.worker.membership.account.controller.vo;
+package com.dk.sso.worker.oauth2.logincontroller.vo;
 
 import java.util.Map;
 
